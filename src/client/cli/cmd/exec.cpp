@@ -50,7 +50,11 @@ mp::ReturnCode cmd::Exec::run(mp::ArgParser* parser)
     request.set_verbosity_level(parser->verbosityLevel());
     ReturnCode return_code;
     while ((return_code = dispatch(&RpcMethod::ssh_info, request, on_success, on_failure)) == ReturnCode::Retry)
-        ;
+    {
+        // ReturnCode::Retry will be returned only when the VM had to be started. If this happened, it is necessary
+        // to remove the line which contained the text "Starting..." and the spinner.
+        cerr << "\b";
+    }
 
     return return_code;
 }
